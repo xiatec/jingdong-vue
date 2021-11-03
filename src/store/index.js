@@ -1,8 +1,17 @@
 import Vuex from 'vuex'
 
+//持久存储 localStorage
+const setLocalCartList = (state) => {
+  const { cartList } = state;
+  const cartListString = JSON.stringify(cartList);
+  localStorage.cartList = cartListString
+}
+const getLocaCartList = () => {
+  return JSON.parse(localStorage.cartList) || {}
+}
 export default Vuex.createStore({
   state: {
-    cartList: {
+    cartList: getLocaCartList()
       // 第一层级是商铺的id
       // shopId: {
       // 第二层是商品id
@@ -20,7 +29,6 @@ export default Vuex.createStore({
 
 
       // { shopId: {shopName:'', productList:{ productId: {} }}}
-    }
   },
   mutations: {
     changeCartItemInfo(state, payload) {
@@ -38,6 +46,7 @@ export default Vuex.createStore({
       if (product.count < 0) { product.count = 0 }
       shopInfo.productList[productId] = product
       state.cartList[shopId] = shopInfo
+      setLocalCartList(state);
     },
     changeShopName(state, payload) {
       const { shopId, shopName } = payload
@@ -46,15 +55,18 @@ export default Vuex.createStore({
       }
       shopInfo.shopName = shopName
       state.cartList[shopId] = shopInfo
+      setLocalCartList(state);
     },
     changeCartItemChecked(state, payload) {
       const { shopId, productId } = payload
       const product = state.cartList[shopId].productList[productId]
       product.check = !product.check
+      setLocalCartList(state);
     },
     cleanCartProducts(state, payload) {
       const { shopId } = payload
       state.cartList[shopId].productList = {}
+      setLocalCartList(state);
     },
     setCartItemsChecked(state, payload) {
       const { shopId } = payload
@@ -65,6 +77,7 @@ export default Vuex.createStore({
           product.check = true
         }
       }
+      setLocalCartList(state);
     }
   },
   actions: {

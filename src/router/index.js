@@ -24,7 +24,17 @@ const routes = [{
     const { isLogin } = localStorage;
     isLogin ? next({ name: 'Home' }) : next();
   }
-},
+  },
+  {
+    path: '/cartList',
+    name: 'cartList',
+    component: () => import(/* webpackChunkName: "cartList" */ '../views/cartList/cartList')
+  },
+  {
+    path: '/orderconfirmation/:id',
+    name: 'OrderConfirmation',
+    component: () => import(/* webpackChunkName: "orderconfirmation" */ '../views/orderconfirmation/OrderConfirmation')
+  },
   // {
   //   path: '/about',
   //   name: 'About',

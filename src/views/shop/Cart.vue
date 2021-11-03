@@ -1,11 +1,11 @@
 <template>
   <div
     class="mask"
-    v-if="showCart"
+    v-if="showCart && total > 0"
     @click="handleCartShowChange"
   />
   <div class="cart">
-    <div class="product" v-if="showCart">
+    <div class="product" v-if="showCart && total > 0">
       <div class="product__header">
         <div
           class="product__header__all"
@@ -69,7 +69,7 @@
         总计：<span class="check__info__price">&yen; {{price}}</span>
       </div>
       <div class="check__btn">
-        <router-link :to="{name: 'Home'}">
+        <router-link :to="{path: `/orderConfirmation/${shopId}`}">
           去结算
         </router-link>
       </div>
