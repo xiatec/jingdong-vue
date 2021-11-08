@@ -30,7 +30,7 @@
             class="product__number__minus"
             @click="() => { changeCartItem(shopId, item._id, item, -1, shopName) }"
           >-</span>
-            {{cartList?.[shopId]?.productList?.[item._id]?.count || 0}}
+            {{getProductCartCount(shopId, item._id)}}
           <span
             class="product__number__plus"
             @click="() => { changeCartItem(shopId, item._id, item, 1, shopName) }"
@@ -46,7 +46,7 @@ import { reactive, ref, toRefs, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { get } from '../../utils/request'
-import { useCommonCartEffect } from './commonCartEffect'
+import { useCommonCartEffect } from '../../effects/cartEffects'
 
 const categories = [
   { name: '全部商品', tab: 'all' },
@@ -79,26 +79,35 @@ const useCurrentListEffect = (currentTab, shopId) => {
   return { list }
 }
 
+// 购物车相关逻辑
+const useCartEffect = () => {
+  const store = useStore()
+  const { cartList, changeCartItemInfo } = useCommonCartEffect()
+  const changeShopName = (shopId, shopName) => {
+    store.commit('changeShopName', { shopId, shopName })
+  }
+  const changeCartItem = (shopId, productId, item, num, shopName) => {
+    changeCartItemInfo(shopId, productId, item, num)
+    changeShopName(shopId, shopName)
+  }
+  const getProductCartCount = (shopId, productId) => {
+    return cartList?.[shopId]?.productList?.[productId]?.count || 0
+  }
+  return { cartList, changeCartItem, getProductCartCount }
+}
+
 export default {
   name: 'Content',
   props: ['shopName'],
   setup() {
     const route = useRoute()
-    const store = useStore()
     const shopId = route.params.id
     const { currentTab, handleTabClick } = useTabEffect()
     const { list } = useCurrentListEffect(currentTab, shopId)
-    const { changeCartItemInfo, cartList } = useCommonCartEffect()
-    const changeShopName = (shopId, shopName) => {
-      store.commit('changeShopName', { shopId, shopName })
-    }
-    const changeCartItem = (shopId, productId, item, num, shopName) => {
-      changeCartItemInfo(shopId, productId, item, num)
-      changeShopName(shopId, shopName)
-    }
+    const { changeCartItem, cartList, getProductCartCount } = useCartEffect()
     return {
       categories, currentTab, handleTabClick, list,
-      shopId, changeCartItem, cartList,
+      shopId, changeCartItem, cartList, getProductCartCount
     }
   }
 }

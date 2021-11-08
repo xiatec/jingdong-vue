@@ -7,10 +7,9 @@
   url('//at.alicdn.com/t/font_1906953_xvfcdxdpp3p.ttf') format('truetype'),
   url('//at.alicdn.com/t/font_1906953_xvfcdxdpp3p.svg#iconfont') format('svg');
 }
-
 .iconfont {
   font-family: "iconfont" !important;
-  font-size: 0.16rem;
+  font-size: .16rem;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
